@@ -40,3 +40,30 @@ document.addEventListener('DOMContentLoaded', function() {
         container.appendChild(newBlock);
     });
 });
+// --- Lógica para añadir Formación Académica ---
+document.addEventListener('DOMContentLoaded', function() {
+    // Esto ya existe, solo añadimos la nueva lógica dentro del mismo evento
+    const addFormacionButton = document.getElementById('agregar-formacion');
+    const formacionContainer = document.getElementById('formacion-container');
+    let formacionCount = 1;
+
+    addFormacionButton.addEventListener('click', function() {
+        formacionCount++;
+
+        const newBlock = document.createElement('div');
+        newBlock.classList.add('formacion-bloque');
+        
+        newBlock.innerHTML = `
+            <label for="titulo${formacionCount}">Título / Carrera:</label><br>
+            <input type="text" id="titulo${formacionCount}" name="titulo${formacionCount}"><br><br>
+            
+            <label for="institucion${formacionCount}">Institución:</label><br>
+            <input type="text" id="institucion${formacionCount}" name="institucion${formacionCount}"><br><br>
+            
+            <label for="fecha_fin_formacion${formacionCount}">Año de Finalización:</label><br>
+            <input type="text" id="fecha_fin_formacion${formacionCount}" name="fecha_fin_formacion${formacionCount}" placeholder="ej: 2024 o En curso"><br><br>
+            <hr>
+        `;
+        formacionContainer.appendChild(newBlock);
+    });
+});
