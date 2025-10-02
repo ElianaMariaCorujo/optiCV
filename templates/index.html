@@ -6,7 +6,65 @@
     <title>Opti-CV | Crea tu CV Profesional</title>
 </head>
 <body>
-    <h1>El Formulario de Opti-CV irá aquí</h1>
-    <p>¡Estamos mostrando HTML real desde Flask!</p>
+    <h1>Crea tu CV Optimizado</h1>
+    <p>Rellena los siguientes campos para generar tu CV profesional.</p>
+
+    <form action="/generar-cv" method="post">
+        
+        <fieldset>
+            <legend>Información de Contacto</legend>
+            <label for="nombre_completo">Nombre Completo:</label><br>
+            <input type="text" id="nombre_completo" name="nombre_completo" required><br><br>
+
+            <label for="email">Email:</label><br>
+            <input type="email" id="email" name="email" required><br><br>
+
+            <label for="telefono">Teléfono:</label><br>
+            <input type="tel" id="telefono" name="telefono" required><br><br>
+
+            <label for="ubicacion">Ubicación (ej: Montevideo, Uruguay):</label><br>
+            <input type="text" id="ubicacion" name="ubicacion" required><br><br>
+        </fieldset>
+        
+        <fieldset>
+            <legend>Enlaces Profesionales</legend>
+            <label for="linkedin">URL de tu Perfil de LinkedIn:</label><br>
+            <input type="url" id="linkedin" name="linkedin"><br><br>
+            
+            <label for="github">URL de tu Perfil de GitHub (opcional):</label><br>
+            <input type="url" id="github" name="github"><br><br>
+        </fieldset>
+
+        <fieldset>
+            <legend>Resumen Profesional</legend>
+            <label for="resumen">Escribe un párrafo corto sobre ti:</label><br>
+            <textarea id="resumen" name="resumen" rows="5" cols="60"></textarea><br><br>
+        </fieldset>
+        
+        <fieldset>
+            <legend>Experiencia Laboral</legend>
+            <div id="experiencia-container">
+                <div class="experiencia-bloque">
+             <label for="cargo">Cargo:</label><br>
+             <input type="text" id="cargo" name="cargo"><br><br>
+            
+             <label for="empresa">Empresa:</label><br>
+             <input type="text" id="empresa" name="empresa"><br><br>
+            
+             <label for="fecha_inicio_exp">Fecha de Inicio:</label><br>
+             <input type="text" id="fecha_inicio_exp" name="fecha_inicio_exp" placeholder="ej: Enero 2020"><br><br>
+            
+             <label for="fecha_fin_exp">Fecha de Fin:</label><br>
+             <input type="text" id="fecha_fin_exp" name="fecha_fin_exp" placeholder="ej: Diciembre 2022 o Actualidad"><br><br>
+
+             <label for="descripcion_exp">Descripción y Logros:</label><br>
+             <textarea id="descripcion_exp" name="descripcion_exp" rows="5" cols="60"></textarea><br><br>
+        </fieldset>
+    <button type="button" id="agregar-experiencia">+ Añadir otra experiencia</button>
+</fieldset>
+     <button type="submit">Generar mi CV</button>
+
+    </form>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
-</html>
+
