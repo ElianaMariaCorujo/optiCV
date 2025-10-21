@@ -1,7 +1,7 @@
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
-from reportlab.lib.units import cm # Para usar centímetros
-import io # Para manejar el archivo en memoria
+from reportlab.lib.units import cm
+import io
 
 def crear_cv_pdf(datos):
     
