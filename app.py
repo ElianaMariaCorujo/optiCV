@@ -1,17 +1,16 @@
 import os
-from flask import Flask, request, jsonify 
-from flask_sqlalchemy import SQLAlchemy 
-# --- Configuración de la App ---
+from flask import Flask, request, jsonify
+from flask_sqlalchemy import SQLAlchemy
+
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'mi-clave-secreta-nadie-la-sabe'
 
-# --- NUEVO: Configuración de Base de Datos (PostgreSQL) ---
 DB_USER = os.environ.get('DB_USER', 'postgres')
-DB_PASS = os.environ.get('DB_PASS', 'probar123') 
+DB_PASS = os.environ.get('DB_PASS', 'probar123') # O tu contraseña
 DB_HOST = os.environ.get('DB_HOST', 'localhost')
-DB_NAME = os.environ.get('DB_NAME', 'opticv_db') 
+DB_NAME = os.environ.get('DB_NAME', 'opticv_db')
 
-app.config['SQLALCHEMY_DATABASE_URI'] = f'postgresql://{DB_USER}:{DB_PASS}@{DB_HOST}/{DB_NAME}'
+app.config['SQLALCHEMY_DATABASE_URI'] = f'postgresql://{DB_USER}:{DB_PASS}@{DB_HOST}/{DB_NAME}?client_encoding=utf8'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
@@ -28,12 +27,10 @@ class CV(db.Model):
     habilidades = db.Column(db.Text)
     idiomas_certs = db.Column(db.Text)
 
-    # Relaciones
     experiencias = db.relationship('Experiencia', backref='cv', lazy=True, cascade="all, delete-orphan")
     formaciones = db.relationship('Formacion', backref='cv', lazy=True, cascade="all, delete-orphan")
 
     def to_dict(self):
-        """Serializador: Convierte el objeto CV y sus relaciones a un diccionario."""
         return {
             'id': self.id,
             'nombre_completo': self.nombre_completo,
@@ -85,23 +82,13 @@ class Formacion(db.Model):
             'fecha_fin_formacion': self.fecha_fin_formacion
         }
 
-
-# --- NUEVO: Rutas de la API ---
-
-# ELIMINADA: @app.route('/', ...) ya no sirve HTML
-
 @app.route('/api/v1/cv', methods=['POST'])
 def create_cv():
-    """
-    Crea un nuevo CV. Espera recibir un JSON.
-    """
     data = request.json
     
-    # Validación simple (en un proyecto más grande, usa Marshmallow o Pydantic)
     if not data or 'nombre_completo' not in data or 'email' not in data:
         return jsonify({"error": "Faltan datos (nombre_completo, email)"}), 400
 
-    # Creamos el objeto CV principal
     nuevo_cv = CV(
         nombre_completo=data.get('nombre_completo'),
         email=data.get('email'),
@@ -114,51 +101,42 @@ def create_cv():
         idiomas_certs=data.get('idiomas_certs')
     )
     db.session.add(nuevo_cv)
-   
     db.session.flush()
 
-    # Creamos las experiencias asociadas
     if 'experiencias' in data:
         for exp_data in data['experiencias']:
             exp = Experiencia(
                 cargo=exp_data.get('cargo'),
                 empresa=exp_data.get('empresa'),
-            
-                cv_id=nuevo_cv.id # Asociamos al CV
+                fecha_inicio_exp=exp_data.get('fecha_inicio_exp'),
+                fecha_fin_exp=exp_data.get('fecha_fin_exp'),
+                descripcion_exp=exp_data.get('descripcion_exp'),
+                cv_id=nuevo_cv.id 
             )
             db.session.add(exp)
 
-    # Creamos las formaciones asociadas
     if 'formaciones' in data:
          for form_data in data['formaciones']:
             form = Formacion(
                 titulo=form_data.get('titulo'),
                 institucion=form_data.get('institucion'),
-                # ... (resto de campos de formación)
-                cv_id=nuevo_cv.id # Asociamos al CV
+                fecha_fin_formacion=form_data.get('fecha_fin_formacion'),
+                cv_id=nuevo_cv.id
             )
             db.session.add(form)
             
-    # Ahora sí, guardamos todo en la base de datos
     db.session.commit()
     
-    # Devolvemos el CV recién creado, serializado a JSON
-    return jsonify(nuevo_cv.to_dict()), 201 # 201 = Created
+    return jsonify(nuevo_cv.to_dict()), 201
 
 
 @app.route('/api/v1/cv/<int:cv_id>', methods=['GET'])
 def get_cv(cv_id):
-    """
-    Obtiene un CV específico por su ID.
-    """
     cv = CV.query.get_or_404(cv_id)
     return jsonify(cv.to_dict())
 
-
 if __name__ == '__main__':
- 
     with app.app_context():
         db.create_all()
-        print("Tablas de la base de datos creadas (si no existían).")
         
     app.run(debug=True)
