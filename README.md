@@ -13,6 +13,8 @@ En el mercado laboral actual, más del 75% de los CVs son descartados por sistem
 * **Diseño 100% Compatible con ATS:** Plantilla de una sola columna, fuentes estándar y estructura limpia para garantizar una lectura perfecta por parte del software.
 * **Guía de Contenido:** Incluye consejos y secciones clave para maximizar el impacto de tu perfil.
 * **(Próximamente) Analizador de Palabras Clave:** Sugerencias de palabras clave basadas en la descripción de la oferta de trabajo.
+* **IA para generar texto profesional.
+* **Seguridad de datos.
 
 ## Stack Tecnológico 🛠️
 
