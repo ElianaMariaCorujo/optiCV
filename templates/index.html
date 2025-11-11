@@ -3,143 +3,111 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Opti-CV | Crea tu CV Profesional</title>
-    
+    <title>Opti-CV | Cliente de API</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
-    
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
     <div class="container">
+        <h1>Opti-CV (Versión API)</h1>
+        <p>Rellena los campos para guardar tu CV en la base de datos.</p>
 
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                    <div class="alert alert-{{ category }}">
-                        {{ message }}
-                    </div>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
-        <h1>Crea tu CV Optimizado</h1>
-        <p>Rellena los siguientes campos para generar tu CV profesional.</p>
-
-        <form method="POST" action="/" novalidate>
-            {{ form.hidden_tag() }}
-
+        <form id="cv-form">
+            
             <fieldset>
                 <legend>Información de Contacto</legend>
-                
-                {{ form.nombre_completo.label }}
-                {{ form.nombre_completo() }}
-                {% for error in form.nombre_completo.errors %}
-                    <span class="error-message">{{ error }}</span>
-                {% endfor %}
+                <label for="nombre_completo">Nombre Completo:</label>
+                <input type="text" id="nombre_completo" name="nombre_completo" required>
 
-                {{ form.email.label }}
-                {{ form.email() }}
-                {% for error in form.email.errors %}
-                    <span class="error-message">{{ error }}</span>
-                {% endfor %}
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
                 
-                {{ form.telefono.label }}
-                {{ form.telefono() }}
-                {% for error in form.telefono.errors %}
-                    <span class="error-message">{{ error }}</span>
-                {% endfor %}
+                <label for="telefono">Teléfono:</label>
+                <input type="tel" id="telefono" name="telefono">
+                
+                <label for="ubicacion">Ubicación:</label>
+                <input type="text" id="ubicacion" name="ubicacion">
+            </fieldset>
 
-                {{ form.ubicacion.label }}
-                {{ form.ubicacion() }}
-                {% for error in form.ubicacion.errors %}
-                    <span class="error-message">{{ error }}</span>
-                {% endfor %}
+            <fieldset>
+                <legend>Enlaces</legend>
+                <label for="linkedin">LinkedIn:</label>
+                <input type="url" id="linkedin" name="linkedin">
+                
+                <label for="github">GitHub:</label>
+                <input type="url" id="github" name="github">
             </fieldset>
             
             <fieldset>
-                <legend>Enlaces Profesionales</legend>
-                {{ form.linkedin.label(text="URL de tu Perfil de LinkedIn:") }}
-                {{ form.linkedin() }}
+                <legend>Perfil</legend>
+                <label for="resumen">Resumen Profesional:</label>
+                <textarea id="resumen" name="resumen" rows="5"></textarea>
                 
-                {{ form.github.label(text="URL de tu Perfil de GitHub (opcional):") }}
-                {{ form.github() }}
-            </fieldset>
-
-            <fieldset>
-                <legend>Resumen Profesional</legend>
-                {{ form.resumen.label(text="Escribe un párrafo corto sobre ti:") }}
-                {{ form.resumen() }}
-                {% for error in form.resumen.errors %}
-                    <span class="error-message">{{ error }}</span>
-                {% endfor %}
-            </fieldset>
-            
-            <fieldset>
-                <legend>Experiencia Laboral</legend>
+                <label for="habilidades">Habilidades (separadas por coma):</label>
+                <textarea id="habilidades" name="habilidades" rows="3"></textarea>
                 
-                <div id="experiencia-container">
-                    <div class="experiencia-bloque">
-                        <label for="experiencias-0-cargo">Cargo:</label><br>
-                        <input type="text" id="experiencias-0-cargo" name="experiencias-0-cargo"><br><br>
-                        
-                        <label for="experiencias-0-empresa">Empresa:</label><br>
-                        <input type="text" id="experiencias-0-empresa" name="experiencias-0-empresa"><br><br>
-                        
-                        <label for="experiencias-0-fecha_inicio_exp">Fecha de Inicio:</label><br>
-                        <input type="text" id="experiencias-0-fecha_inicio_exp" name="experiencias-0-fecha_inicio_exp" placeholder="ej: Enero 2020"><br><br>
-                        
-                        <label for="experiencias-0-fecha_fin_exp">Fecha de Fin:</label><br>
-                        <input type="text" id="experiencias-0-fecha_fin_exp" name="experiencias-0-fecha_fin_exp" placeholder="ej: Diciembre 2022 o Actualidad"><br><br>
-
-                        <label for="experiencias-0-descripcion_exp">Descripción y Logros:</label><br>
-                        <textarea id="experiencias-0-descripcion_exp" name="experiencias-0-descripcion_exp" rows="5" cols="60"></textarea><br><br>
-                        <hr>
-                    </div>
-                </div>
-                <button type="button" id="agregar-experiencia">+ Añadir otra experiencia</button>
-            </fieldset>
-
-            <fieldset>
-                <legend>Formación Académica</legend>
-                <div id="formacion-container">
-                    <div class="formacion-bloque">
-                        <label for="formaciones-0-titulo">Título / Carrera:</label><br>
-                        <input type="text" id="formaciones-0-titulo" name="formaciones-0-titulo"><br><br>
-                        
-                        <label for="formaciones-0-institucion">Institución:</label><br>
-                        <input type="text" id="formaciones-0-institucion" name="formaciones-0-institucion"><br><br>
-                        
-                        <label for="formaciones-0-fecha_fin_formacion">Año de Finalización:</label><br>
-                        <input type="text" id="formaciones-0-fecha_fin_formacion" name="formaciones-0-fecha_fin_formacion" placeholder="ej: 2024 o En curso"><br><br>
-                        <hr>
-                    </div>
-                </div>
-                <button type="button" id="agregar-formacion">+ Añadir otra formación</button>
+                <label for="idiomas_certs">Idiomas y Certs:</label>
+                <textarea id="idiomas_certs" name="idiomas_certs" rows="3"></textarea>
             </fieldset>
             
-            <fieldset>
-                <legend>Habilidades</legend>
-                {{ form.habilidades.label(text="Enumera tus habilidades técnicas y blandas, separadas por comas:") }}
-                {{ form.habilidades(placeholder="Ej: Python, Flask, JavaScript, SQL, Git, Liderazgo de equipos, Metodologías Ágiles") }}
-                {% for error in form.habilidades.errors %}
-                    <span class="error-message">{{ error }}</span>
-                {% endfor %}
-            </fieldset>
-
-            <fieldset>
-                <legend>Idiomas y Certificaciones</legend>
-                {{ form.idiomas_certs.label(text="Enumera tus idiomas y certificaciones relevantes:") }}
-                {{ form.idiomas_certs(placeholder="Ej: Inglés (Nivel C1 - Avanzado), Portugués (Nativo), Certified Scrum Master (CSM)") }}
-                {% for error in form.idiomas_certs.errors %}
-                    <span class="error-message">{{ error }}</span>
-                {% endfor %}
-            </fieldset>
-            
-            {{ form.submit() }}
+            <button type="submit">Guardar CV en la Base de Datos</button>
         </form>
+
+        <div id="respuesta-api" style="display:none; margin-top: 20px;">
+            <h3>Respuesta del Servidor:</h3>
+            <pre id="respuesta-json"></pre>
+            <a href="#" id="link-pdf" target="_blank" style="display:none;">Descargar PDF</a>
+        </div>
     </div>
-    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+
+    <script>
+        // --- Nuevo JavaScript para hablar con la API ---
+        document.getElementById('cv-form').addEventListener('submit', function(evento) {
+            evento.preventDefault(); // Evita que el formulario se envíe de la forma tradicional
+
+            // 1. Recolecta los datos del formulario
+            const formData = new FormData(evento.target);
+            const datos = Object.fromEntries(formData.entries());
+
+            // (Aquí añadiremos la lógica para recolectar experiencia y formación luego)
+
+            console.log("Enviando datos a la API:", datos);
+
+            // 2. Envía los datos como JSON a la API
+            fetch('/api/v1/cv', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(datos)
+            })
+            .then(response => response.json())
+            .then(data => {
+                // 3. Muestra la respuesta del servidor
+                console.log("Respuesta de la API:", data);
+                const respuestaDiv = document.getElementById('respuesta-api');
+                const respuestaJSON = document.getElementById('respuesta-json');
+                const linkPDF = document.getElementById('link-pdf');
+
+                respuestaJSON.textContent = JSON.stringify(data, null, 2);
+                respuestaDiv.style.display = 'block';
+
+                if (data.id) {
+                    // Si la creación fue exitosa, muestra el link de descarga
+                    linkPDF.href = `/api/v1/cv/${data.id}/pdf`;
+                    linkPDF.style.display = 'block';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                const respuestaDiv = document.getElementById('respuesta-api');
+                const respuestaJSON = document.getElementById('respuesta-json');
+                respuestaJSON.textContent = `Error al conectar con la API: ${error}`;
+                respuestaDiv.style.display = 'block';
+            });
+        });
+    </script>
 </body>
 </html>
-

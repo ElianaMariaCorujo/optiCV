@@ -1,15 +1,13 @@
 import os
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, make_response, render_template
 from flask_sqlalchemy import SQLAlchemy
-from flask import make_response
 from generador_pdf import crear_cv_pdf
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'mi-clave-secreta-nadie-la-sabe'
 
-# --- Configuración de Base de Datos ---
 DB_USER = os.environ.get('DB_USER', 'postgres')
-DB_PASS = os.environ.get('DB_PASS', 'probar123') # Asegúrate que esta sea tu contraseña
+DB_PASS = os.environ.get('DB_PASS', 'probar123')
 DB_HOST = os.environ.get('DB_HOST', 'localhost')
 DB_NAME = os.environ.get('DB_NAME', 'opticv_db')
 
@@ -18,7 +16,6 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
-# --- Modelos de Base de Datos ---
 class CV(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nombre_completo = db.Column(db.String(120), nullable=False)
@@ -72,8 +69,11 @@ class Formacion(db.Model):
             'fecha_fin_formacion': self.fecha_fin_formacion
         }
 
-# --- Rutas de la API ---
-@app.route('/api/v1/cv', methods=['POST'])
+@app.route('/')
+def inicio():
+    return render_template('index.html')
+
+@app.route('/api/v1/cv', methods=['GET', 'POST'])
 def create_cv():
     data = request.json
     if not data or 'nombre_completo' not in data or 'email' not in data:
@@ -114,7 +114,6 @@ def create_cv():
 
 @app.route('/api/v1/cv/<int:cv_id>/pdf', methods=['GET'])
 def get_cv_pdf(cv_id):
-
     cv = CV.query.get_or_404(cv_id)
     datos_cv = cv.to_dict()
 
@@ -132,7 +131,6 @@ def get_cv_pdf(cv_id):
 
     return response
 
-# --- Ejecución ---
 if __name__ == '__main__':
     with app.app_context():
         print("--- Creando tablas (si no existen)... ---")
